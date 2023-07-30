@@ -1,0 +1,28 @@
+how to setup vite:
+1.npm create vite@latest
+2.give a name
+3.select React
+4.select javascript
+5.quit and go to directory
+6.npm i -> to install dependancy
+
+
+
+
+how to run vite and config eslint
+1. "npm run dev" -> start a vite app
+2. setup eslint ->  i) "npm i eslint vite-plugin-eslint eslint-config-react-app --save-dev"
+                    ii) create ".eslintrc.json" inside src 
+                    iii) paste it inside .eslintrc.json file        {
+                                                                        "extends":"react-app"
+                                                                    } 
+
+3.change vite.config.js :    
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import eslint from "vite-plugin-eslint";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react(), eslint()],
+});
