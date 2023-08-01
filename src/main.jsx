@@ -38,7 +38,7 @@ e
         loader: menuLoader,
       },
 ## Third we call the hook useLoaderData() to the route page so that when a route 
-   is hit it will execute this hook.this hook will do the rest.
+   is hit it will execute this hook.this hook will give the response of the rest API.
 ## React Router use "Render as u fetch" technic where page gets loaded and data loading same time
 ## In useEffect use "Fetch on render" technic where page first gets loaded then useEffect() gets 
    called then data loading is happenning. So it will gets more time to load data also
@@ -49,4 +49,39 @@ e
 ##  const navigation = useNavigation(); this hook will give us the loading state
 ## if a page is idle or in loading state we can use this hook to track then we can use 
     this loading state and add our spinner component
+
+    *** Submit form data using React Router***
+-----------------------------------------------------------------------
+## we can replace the <form> with <From> which is a React Router feature
+## now no need to ware up all the input field with a state 
+## React-Router will do it for us 
+## now when we submit the form it will pass the data into "action" func and we can grap 
+the request in the parameter 
+## see CreateOrder component
+## steps-1 ---> create the <From> 
+## steps-2 ---> create action func
+## pass action fucn to the route
+      {
+        path: "/order/new",
+        element: <CreateOrder />,
+        action: createOrderAction,
+      },
+## steps-3 ---> grab the request to the action fucn and use it
+## step-4 ----> now we can access all the data inside action func 
+## step-5 --> now we can call the REST API using that data
+
+*** Submit form data using React Router erorr handle***
+-----------------------------------------------------------------------
+## to handle error we can return it from the action
+## then we can reference it using useActionData() hook in the component
+## then use it in then component
+
+
+
+//Important
+#### ALL "LOADER" AND "ACTION" FUNCTION MUST RETURN THE DATA (OR SOMETHING) 
+     then this data will be access from components via some hooks
+     like useLoaderData(),useActionData()..
+
+
 */
