@@ -8,10 +8,10 @@ function AppLayout() {
   const navigation = useNavigation();
   //   console.log(navigation);
   return (
-    <div>
+    <div className="grid min-h-screen grid-rows-[auto_1fr_auto]">
+      {navigation.state === "loading" && <Spinner />}
       <Header />
-      <main>
-        {navigation.state === "loading" && <Spinner />}
+      <main className="w-full md:mx-auto md:w-[80%]">
         {/* output current nested route using <Outlet /> */}
         <Outlet />
       </main>
