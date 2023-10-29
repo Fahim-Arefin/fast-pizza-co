@@ -6,6 +6,7 @@ import Home from "./ui/Home";
 import Menu, { loader as menuLoader } from "./features/menu/Menu";
 import { loader as orderLoader } from "./features/order/Order";
 import { action as createOrderAction } from "./features/order/CreateOrder";
+import { action as UpdateOrderAction } from "./features/order/UpdateOrder";
 
 import Cart from "./features/cart/Cart";
 import CreateOrder from "./features/order/CreateOrder";
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
         loader: orderLoader,
         //this error will caught fetching related error
         errorElement: <Error />,
+        action: UpdateOrderAction,
       },
     ],
   },

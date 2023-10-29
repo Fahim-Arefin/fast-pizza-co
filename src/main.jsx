@@ -93,12 +93,20 @@ the request in the parameter
 
 ## useFetcher() 
 ------------------------------------------------
-## it is used when we need data which is attached to another route
-## it is used to fetch data without moving to another page / without navigation
-## suppose we have data which loads when we hit the '/menu' routes but we are now in '/order/:id' route
+Sometimes you want to call a loader outside of navigation, or call an action (and get the data on the page to  revalidate) without changing the URL. Or you need to have multiple mutations in-flight at the same time.
+Many interactions with the server aren't navigation events. This hook lets you plug your UI into your actions and loaders without navigating.
+
+## const fetcher = useFetcher()
+## fetcher.load('url')
+
+  ## it is used when we need data which is attached to another route
+  ## it is used to fetch data without moving to another page / without navigation
+  ## suppose we have data which loads when we hit the '/menu' routes but we are now in '/order/:id' route
    and we need the data that is loads by the '/menu' routes, then we can use useFetcher() hook to load 
    '/menu' data without moving from '/order/:id' page
 
+## fetcher.Form
+  
 
 
 */
