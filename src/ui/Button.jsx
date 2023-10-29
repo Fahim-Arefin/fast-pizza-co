@@ -13,12 +13,12 @@ function Button({ children, primary, secondary, ...rest }) {
   if (rest?.to) {
     return (
       <Link
-        className="rounded-full border-none bg-yellow-500 px-4 py-2 font-semibold uppercase tracking-wide
-    transition-all duration-150 hover:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 
-    focus:ring-offset-2 active:bg-yellow-400 disabled:cursor-not-allowed disabled:bg-yellow-200"
+        className={`rounded-full border-none bg-yellow-500 font-semibold uppercase tracking-wide
+        transition-all duration-150 hover:bg-yellow-300 focus:outline-none focus:ring focus:ring-yellow-300 
+        focus:ring-offset-2 active:bg-yellow-400 disabled:cursor-not-allowed disabled:bg-yellow-200 ${rest.className}`}
         to={rest.to}
       >
-        Order pizza
+        {children}
       </Link>
     );
   }

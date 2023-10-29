@@ -2,11 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
+import { Provider } from "react-redux";
+import { store } from "./store/index.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Provider>,
 );
 
 /*
@@ -82,6 +86,19 @@ the request in the parameter
 #### ALL "LOADER" AND "ACTION" FUNCTION MUST RETURN THE DATA (OR SOMETHING) 
      then this data will be access from components via some hooks
      like useLoaderData(),useActionData()..
+
+
+## Adding Redux and advance React-Router
+------------------------------------------------
+
+## useFetcher() 
+------------------------------------------------
+## it is used when we need data which is attached to another route
+## it is used to fetch data without moving to another page / without navigation
+## suppose we have data which loads when we hit the '/menu' routes but we are now in '/order/:id' route
+   and we need the data that is loads by the '/menu' routes, then we can use useFetcher() hook to load 
+   '/menu' data without moving from '/order/:id' page
+
 
 
 */

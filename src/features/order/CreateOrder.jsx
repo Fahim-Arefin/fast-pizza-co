@@ -1,6 +1,11 @@
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { store, clearCart } from "../../store/index";
+import { formatCurrency } from "../../utils/helpers";
+import { useState } from "react";
+import { fetchAddress } from "../../store/async thunks/fetchAdress";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -8,33 +13,20 @@ const isValidPhone = (str) =>
     str,
   );
 
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
-
 function CreateOrder() {
-  const cart = fakeCart;
+  const [withPriority, setWithPriority] = useState(false);
+
   const navigation = useNavigation();
+  const { userName, totalPrice, currentCart } = useSelector(
+    ({ user, cart }) => ({
+      userName: user.userName,
+      totalPrice: cart.cart.reduce((sum, item) => sum + item.totalPrice, 0),
+      currentCart: cart.cart,
+    }),
+  );
+  const cart = currentCart;
+  const priorityPrice = withPriority ? totalPrice * 0.2 : 0;
+  const totalPriceIncludePriorityPrice = totalPrice + priorityPrice;
 
   //if error is returned from action the formError can referance it
   const formError = useActionData();
@@ -42,10 +34,14 @@ function CreateOrder() {
   const isSubmitting = navigation.state === "submitting";
   // console.log(navigation);
 
+  const dispatch = useDispatch();
+  const userState = useSelector((state) => state.user);
+
   return (
     <div className="mx-auto my-24 w-full space-y-5 text-center md:w-[84%]  lg:w-[70%] xl:w-[50%]">
       <h2 className="text-2xl">Ready to order? Let's go!</h2>
 
+      {/* form will be submitted in the same page '/order/new */}
       <Form method="POST" className="space-y-4 p-4 ">
         <div className="space-y-4">
           <label className="text-lg">First Name</label>
@@ -56,6 +52,7 @@ function CreateOrder() {
               name="customer"
               required
               placeholder="name"
+              defaultValue={userName}
             />
           </div>
         </div>
@@ -82,7 +79,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="relative space-y-4">
           <label className="text-lg">Address</label>
           <div>
             <input
@@ -90,9 +87,33 @@ function CreateOrder() {
               type="text"
               name="address"
               placeholder="adress"
+              defaultValue={userState.address}
               required
             />
           </div>
+          {userState.address ? (
+            ""
+          ) : (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch(fetchAddress());
+              }}
+              primary
+              className="absolute right-2 top-[52px] px-4 py-2 text-xs"
+            >
+              {userState.status === "loading"
+                ? "getting position..."
+                : "get position"}
+            </Button>
+          )}
+          {userState.error ? (
+            <p className=" rounded-xl bg-rose-100 p-1 text-rose-600">
+              {userState.error}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
 
         <div className="flex items-center justify-center space-x-4">
@@ -101,8 +122,8 @@ function CreateOrder() {
             name="priority"
             id="priority"
             className="checkbox-warning checkbox"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)}
           />
           <label htmlFor="priority" className="text-xl">
             Want to yo give your order priority?
@@ -120,7 +141,9 @@ function CreateOrder() {
 
         <div>
           <Button primary disabled={isSubmitting} className="px-4 py-2">
-            {isSubmitting ? "Placing order..." : "Order now"}
+            {isSubmitting
+              ? "Placing order..."
+              : `Order now ${formatCurrency(totalPriceIncludePriorityPrice)}`}
           </Button>
         </div>
       </Form>
@@ -140,7 +163,7 @@ export async function action({ request }) {
   //order has no id
   const order = {
     ...data,
-    priority: data.priority === "on",
+    priority: data.priority === "true",
     cart: JSON.parse(data.cart),
   };
 
@@ -162,6 +185,9 @@ export async function action({ request }) {
   const newOrder = await createOrder(order);
   // console.log(newOrder);
 
+  //DO not overuse store directly bcz it will disable some default redux optimization
+  //here we cannot use useDispatch() hook bcz it is not a component so we need to manually import store and dispatch
+  store.dispatch(clearCart());
   // return null;
   return redirect(`/order/${newOrder.id}`);
 }

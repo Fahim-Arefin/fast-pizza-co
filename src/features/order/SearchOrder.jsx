@@ -20,7 +20,7 @@ function SearchOrder() {
         onChange={(e) => setQuery(e.target.value)}
         type="text"
         placeholder="search #orderId"
-        className="transition-w input w-[80%] duration-200 focus:w-full"
+        className="transition-w input w-[80%] bg-stone-100 duration-200 focus:w-full"
       />
     </form>
   );

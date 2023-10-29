@@ -17,7 +17,7 @@ import Error from "./ui/Error";
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
-    errorElement: <Error />, //if any error occur this Error component will run
+    errorElement: <Error />, //if any error occur related to path this Error component will run (not found route)
     //Nested Routes is inside the children arrays of obj (check doc)
     children: [
       {
@@ -44,6 +44,7 @@ const router = createBrowserRouter([
         path: "/order/:orderId",
         element: <Order />,
         loader: orderLoader,
+        //this error will caught fetching related error
         errorElement: <Error />,
       },
     ],
